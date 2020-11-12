@@ -361,27 +361,22 @@ CLASS zcl_adu_messages IMPLEMENTATION.
     DATA(messages) = get_messages( ).
 
     result =
-        xsdbool( line_exists( messages[ KEY type type = severity-error ] ) OR
-                 line_exists( messages[ KEY type type = severity-abort ] ) OR
-                 line_exists( messages[ KEY type type = severity-exception ] ) ).
+        xsdbool(
+            FILTER #( messages USING KEY type IN message_error_types WHERE type = table_line ) IS NOT INITIAL ).
 
   ENDMETHOD.
 
 
   METHOD raise_gateway_busi_exception.
 
-    DATA(exception) = CAST /iwbep/cx_mgw_busi_exception( create_gateway_exception( ) ).
-
-    RAISE EXCEPTION exception.
+    RAISE EXCEPTION CAST /iwbep/cx_mgw_busi_exception( create_gateway_exception( ) ).
 
   ENDMETHOD.
 
 
   METHOD raise_gateway_tech_exception.
 
-    DATA(exception) = CAST /iwbep/cx_mgw_tech_exception( create_gateway_exception( ) ).
-
-    RAISE EXCEPTION exception.
+    RAISE EXCEPTION CAST /iwbep/cx_mgw_tech_exception( create_gateway_exception( ) ).
 
   ENDMETHOD.
 
